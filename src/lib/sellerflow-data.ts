@@ -4,9 +4,10 @@ export type OrderStatus =
   | "Packed"
   | "Out for Delivery"
   | "Delivered"
-  | "Returned";
+  | "Returned"
+  | "Cancelled";
 
-export type Channel = "Facebook" | "WhatsApp" | "TikTok" | "Instagram";
+export type Channel = "Facebook" | "WhatsApp" | "TikTok" | "Instagram" | "Manual";
 
 export type Order = {
   id: string;
@@ -37,9 +38,10 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "Out for Delivery",
   "Delivered",
   "Returned",
+  "Cancelled",
 ];
 
-export const CHANNELS: Channel[] = ["Facebook", "WhatsApp", "TikTok", "Instagram"];
+export const CHANNELS: Channel[] = ["Facebook", "WhatsApp", "TikTok", "Instagram", "Manual"];
 
 export const COURIERS = ["Pathao", "Steadfast", "RedX", "Paperfly", "Sundarban"];
 
@@ -224,6 +226,7 @@ export function statusClass(status: OrderStatus) {
     "Out for Delivery": "status-transit",
     Delivered: "status-delivered",
     Returned: "status-returned",
+    Cancelled: "status-returned",
   };
   return map[status];
 }
@@ -234,6 +237,7 @@ export function channelDotClass(channel: Channel) {
     WhatsApp: "channel-dot-whatsapp",
     TikTok: "channel-dot-tiktok",
     Instagram: "channel-dot-instagram",
+    Manual: "bg-muted-foreground",
   };
   return map[channel];
 }
