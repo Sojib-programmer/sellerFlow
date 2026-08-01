@@ -2,10 +2,10 @@
   "$comment": "Build performance budgets. Sizes are gzipped kB. Run `bun run perf` after a production build.",
   "bundle": {
     "clientDir": "dist/client",
-    "totalJsGzipKb": 0,
-    "totalCssGzipKb": 0,
-    "largestChunkGzipKb": 0,
-    "entryGzipKb": 0
+    "totalJsGzipKb": 207,
+    "totalCssGzipKb": 16,
+    "largestChunkGzipKb": 119,
+    "entryGzipKb": 119
   },
   "routes": {
     "thresholds": {

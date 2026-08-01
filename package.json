@@ -9,7 +9,11 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:smoke": "node tests/smoke.mjs",
+    "perf:budget": "node scripts/perf-budget.mjs",
+    "perf:routes": "node scripts/route-perf.mjs",
+    "perf": "node scripts/perf-budget.mjs && node scripts/route-perf.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
