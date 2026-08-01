@@ -1,94 +1,114 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { DefaultActions, PageHeader } from "@/components/sellerflow/page-header";
-import { BarChart, KpiCard, OrderTable, Panel } from "@/components/sellerflow/primitives";
-import { useOrderDialogs } from "@/components/sellerflow/use-order-dialogs";
-import { channelDotClass, channelShare } from "@/lib/sellerflow-data";
-import { useSellerFlow } from "@/lib/sellerflow-store";
-import { cn } from "@/lib/utils";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Logo } from "@/components/sellerflow/logo";
+import { SiteFooter } from "@/components/sellerflow/footer";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SellerFlow BD — Social commerce order console" },
+      { title: "SellerFlow BD — Your social orders, finally under control" },
       {
         name: "description",
         content:
-          "Run your Bangladesh social-commerce store: orders, unified inbox, inventory, courier performance and COD tracking in one console.",
+          "SellerFlow BD is the operations hub for Bangladeshi Facebook, Instagram, TikTok and WhatsApp sellers: chat orders, couriers, COD and inventory.",
       },
-      { property: "og:title", content: "SellerFlow BD — Social commerce order console" },
+      {
+        property: "og:title",
+        content: "SellerFlow BD — Your social orders, finally under control",
+      },
       {
         property: "og:description",
         content:
-          "Track orders, COD collection and courier performance for your Facebook, WhatsApp and TikTok store.",
+          "Chat orders to trackable deliveries, COD collection and sales insight — built for Bangladeshi social sellers.",
       },
     ],
   }),
-  component: Dashboard,
+  component: WelcomePage,
 });
 
-const week = [
-  { label: "Mon", value: 45 },
-  { label: "Tue", value: 62 },
-  { label: "Wed", value: 55 },
-  { label: "Thu", value: 78 },
-  { label: "Fri", value: 61 },
-  { label: "Sat", value: 89 },
-  { label: "Sun", value: 74 },
+const HIGHLIGHTS = [
+  "Unified inbox for Facebook, Instagram, TikTok & WhatsApp",
+  "COD tracking across Pathao, RedX, Steadfast, Paperfly & Sundarban",
+  "Live inventory and district-level delivery insight",
 ];
 
-function Dashboard() {
-  const { orders } = useSellerFlow();
-  const { dialogs, openCreate, openOrder } = useOrderDialogs();
+const GLANCE = [
+  { k: "Orders", v: "38" },
+  { k: "Revenue", v: "৳86,420" },
+  { k: "Pending", v: "7" },
+  { k: "COD to collect", v: "৳42,750" },
+];
 
+function WelcomePage() {
   return (
-    <>
-      <PageHeader
-        title={<>Good morning, Dan 👋</>}
-        subtitle="Here is what is happening with your store today."
-        actions={<DefaultActions onCreate={() => openCreate()} />}
-      />
+    <div className="grid min-h-screen lg:grid-cols-2">
+      <div className="flex flex-col justify-center px-5 py-12 sm:px-10">
+        <div className="mx-auto w-full max-w-sm">
+          <Logo size="lg" />
+          <h1 className="mt-8 text-3xl font-extrabold tracking-tight sm:text-4xl">
+            Your social orders, finally under control.
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            The back-office workspace for Bangladeshi social commerce merchants — chat orders,
+            couriers, COD and inventory in one place.
+          </p>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiCard label="Today’s orders" value="38" hint="↑ 12% vs. yesterday" />
-        <KpiCard label="Today’s revenue" value="৳86,420" hint="↑ 18% vs. yesterday" />
-        <KpiCard
-          label="Pending confirmation"
-          value="7"
-          hint="Needs your attention"
-          tone="bad"
-        />
-        <KpiCard label="COD to collect" value="৳42,750" hint="From 26 deliveries" />
-      </div>
+          <Button asChild className="mt-8 h-12 w-full gap-2 text-base">
+            <Link to="/dashboard">
+              Enter demo workspace
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </Button>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1.65fr_1fr]">
-        <Panel title="Orders this week" subtitle="118 orders · ৳264,930 in sales">
-          <BarChart data={week} />
-        </Panel>
-        <Panel title="Sales channels" subtitle="Share of orders this month">
-          <div className="grid gap-3.5">
-            {channelShare.map((c) => (
-              <div key={c.channel} className="flex items-center gap-2.5">
-                <i className={cn("size-2.5 rounded-full", channelDotClass(c.channel))} />
-                {c.channel}
-                <b className="ml-auto">{c.share}</b>
-              </div>
+          <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <ShieldCheck className="size-3.5" aria-hidden />
+            Demo mode — no account, sample data only
+          </p>
+
+          <ul className="mt-10 space-y-3">
+            {HIGHLIGHTS.map((h) => (
+              <li key={h} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                <span>{h}</span>
+              </li>
             ))}
+          </ul>
+
+          <div className="mx-auto w-full">
+            <SiteFooter />
           </div>
-        </Panel>
+        </div>
       </div>
 
-      <OrderTable
-        title="Recent orders"
-        subtitle="Keep your customer orders moving"
-        orders={orders.slice(0, 5)}
-        onSelect={openOrder}
-        action={
-          <Link to="/orders" className="text-xs font-semibold text-primary">
-            View all orders →
-          </Link>
-        }
-      />
-      {dialogs}
-    </>
+      <aside className="relative hidden items-center justify-center overflow-hidden bg-navy px-12 lg:flex">
+        <div className="absolute -top-24 -right-16 size-80 rounded-full bg-primary/25 blur-3xl" />
+        <div className="absolute -bottom-28 -left-10 size-72 rounded-full bg-coral/20 blur-3xl" />
+        <div className="relative w-full max-w-md space-y-4">
+          <div className="rounded-2xl border border-border/10 bg-card/5 p-6 backdrop-blur">
+            <p className="text-xs font-semibold tracking-widest text-primary uppercase">
+              Today at a glance
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              {GLANCE.map((s) => (
+                <div key={s.k}>
+                  <p className="text-xs text-navy-foreground/60">{s.k}</p>
+                  <p className="num mt-0.5 text-xl font-bold text-navy-foreground">{s.v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-border/10 bg-card/5 p-6 backdrop-blur">
+            <p className="text-sm leading-relaxed text-navy-foreground/80">
+              “Age Messenger, WhatsApp ar khata — sob alada chilo. Ekhon ek jaygay sob order track
+              kori.”
+            </p>
+            <p className="mt-3 text-xs text-navy-foreground/50">
+              Sharmin Akter · Rongdhonu Collection, Dhaka
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
   );
 }
