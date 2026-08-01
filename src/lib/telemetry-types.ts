@@ -3,16 +3,18 @@
 
 export type ErrorLevel = "error" | "warning" | "info";
 
+export type ExtraValue = string | number | boolean | null;
+
 export type ErrorEventInput = {
   level: ErrorLevel;
   message: string;
-  stack?: string;
+  stack?: string | undefined;
   route: string;
   source: string;
   release: string;
   sessionId: string;
-  userAgent?: string;
-  extra?: Record<string, unknown>;
+  userAgent?: string | undefined;
+  extra?: Record<string, ExtraValue> | undefined;
 };
 
 export type ErrorEvent = ErrorEventInput & {

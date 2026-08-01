@@ -21,7 +21,7 @@ const eventSchema = z.object({
   release: z.string().max(60),
   sessionId: z.string().max(64),
   userAgent: z.string().max(300).optional(),
-  extra: z.record(z.unknown()).optional(),
+  extra: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
 });
 
 const payloadSchema = z.object({
