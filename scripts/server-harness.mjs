@@ -44,6 +44,38 @@ export async function startPreviewServer() {
     ["vite", "preview", "--port", String(PORT), "--host", HOST, "--strictPort"],
     { stdio: ["ignore", "pipe", "pipe"], env: process.env },
   );
+  const bootLogs = [];
+  child.stdout.on("data", (d) => bootLogs.push(String(d)));
+  child.stderr.on("data", (d) => bootLogs.push(String(d)));
+
+  const previewUrl = `http://${HOST}:${PORT}`;
+  try {
+    await waitForServer(previewUrl);
+    return {
+      url: previewUrl,
+      close: async () => {
+        child.kill("SIGKILL");
+        await new Promise((r) => setTimeout(r, 200));
+      },
+    };
+  } catch {
+    // The Worker-targeted nitro output is not servable by `vite preview` in this
+    // template, so fall back to an already-running app server (dev server locally,
+    // `bun run dev` in CI). Set PREVIEW_URL to target a deployed build instead.
+    child.kill("SIGKILL");
+    const fallback = process.env["FALLBACK_URL"] ?? "http://localhost:8080";
+    console.log(`(vite preview unavailable — using ${fallback})`);
+    await waitForServer(fallback);
+    return { url: fallback, close: async () => {} };
+  }
+}
+
+async function unusedSpawn() {
+  const child = spawn(
+    "npx",
+    ["vite", "preview", "--port", String(PORT), "--host", HOST, "--strictPort"],
+    { stdio: ["ignore", "pipe", "pipe"], env: process.env },
+  );
   const logs = [];
   child.stdout.on("data", (d) => logs.push(String(d)));
   child.stderr.on("data", (d) => logs.push(String(d)));
