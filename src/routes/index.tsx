@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Chat orders to trackable deliveries, COD collection and sales insight — built for Bangladeshi social sellers.",
+          "SellerFlow BD is the operations hub for Bangladeshi Facebook, Instagram, TikTok and WhatsApp sellers: chat orders, couriers, COD and inventory.",
       },
     ],
   }),

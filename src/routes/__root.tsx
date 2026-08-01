@@ -82,13 +82,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SellerFlow BD" },
+      { title: "SellerFlow BD — Your social orders, finally under control" },
       {
         name: "description",
-        content: "Order, inbox and delivery console for Bangladesh social commerce sellers.",
+        content: "SellerFlow BD is the operations hub for Bangladeshi Facebook, Instagram, TikTok and WhatsApp sellers: chat orders, couriers, COD and inventory.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "SellerFlow BD — Your social orders, finally under control" },
+      { name: "twitter:title", content: "SellerFlow BD — Your social orders, finally under control" },
+      { property: "og:description", content: "SellerFlow BD is the operations hub for Bangladeshi Facebook, Instagram, TikTok and WhatsApp sellers: chat orders, couriers, COD and inventory." },
+      { name: "twitter:description", content: "SellerFlow BD is the operations hub for Bangladeshi Facebook, Instagram, TikTok and WhatsApp sellers: chat orders, couriers, COD and inventory." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/f7c12491-6e0d-4cb5-9710-5514c1fd9b5c" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/f7c12491-6e0d-4cb5-9710-5514c1fd9b5c" },
     ],
     links: [
       {
