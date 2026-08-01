@@ -69,31 +69,3 @@ export async function startPreviewServer() {
     return { url: fallback, close: async () => {} };
   }
 }
-
-async function unusedSpawn() {
-  const child = spawn(
-    "npx",
-    ["vite", "preview", "--port", String(PORT), "--host", HOST, "--strictPort"],
-    { stdio: ["ignore", "pipe", "pipe"], env: process.env },
-  );
-  const logs = [];
-  child.stdout.on("data", (d) => logs.push(String(d)));
-  child.stderr.on("data", (d) => logs.push(String(d)));
-
-  const url = `http://${HOST}:${PORT}`;
-  try {
-    await waitForServer(url);
-  } catch (error) {
-    child.kill("SIGKILL");
-    console.error(logs.join(""));
-    throw error;
-  }
-
-  return {
-    url,
-    close: async () => {
-      child.kill("SIGKILL");
-      await new Promise((r) => setTimeout(r, 200));
-    },
-  };
-}
