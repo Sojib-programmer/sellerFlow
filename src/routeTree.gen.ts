@@ -9,191 +9,181 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AnalyticsRouteImport } from './routes/analytics'
-import { Route as DeliveryRouteImport } from './routes/delivery'
-import { Route as InboxRouteImport } from './routes/inbox'
-import { Route as OrdersRouteImport } from './routes/orders'
-import { Route as ProductsRouteImport } from './routes/products'
-import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
+import { Route as AppCouriersRouteImport } from './routes/_app.couriers'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppInboxRouteImport } from './routes/_app.inbox'
+import { Route as AppProductsRouteImport } from './routes/_app.products'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppOrdersIndexRouteImport } from './routes/_app.orders.index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnalyticsRoute = AnalyticsRouteImport.update({
-  id: '/analytics',
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/_app/analytics',
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DeliveryRoute = DeliveryRouteImport.update({
-  id: '/delivery',
-  path: '/delivery',
+const AppCouriersRoute = AppCouriersRouteImport.update({
+  id: '/_app/couriers',
+  path: '/couriers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InboxRoute = InboxRouteImport.update({
-  id: '/inbox',
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/_app/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppInboxRoute = AppInboxRouteImport.update({
+  id: '/_app/inbox',
   path: '/inbox',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrdersRoute = OrdersRouteImport.update({
-  id: '/orders',
-  path: '/orders',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
+const AppProductsRoute = AppProductsRouteImport.update({
+  id: '/_app/products',
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/_app/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppOrdersIndexRoute = AppOrdersIndexRouteImport.update({
+  id: '/_app/orders/',
+  path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/delivery': typeof DeliveryRoute
-  '/inbox': typeof InboxRoute
-  '/orders': typeof OrdersRoute
-  '/products': typeof ProductsRoute
-  '/settings': typeof SettingsRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/couriers': typeof AppCouriersRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/inbox': typeof AppInboxRoute
+  '/products': typeof AppProductsRoute
+  '/settings': typeof AppSettingsRoute
+  '/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/delivery': typeof DeliveryRoute
-  '/inbox': typeof InboxRoute
-  '/orders': typeof OrdersRoute
-  '/products': typeof ProductsRoute
-  '/settings': typeof SettingsRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/couriers': typeof AppCouriersRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/inbox': typeof AppInboxRoute
+  '/products': typeof AppProductsRoute
+  '/settings': typeof AppSettingsRoute
+  '/orders': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/delivery': typeof DeliveryRoute
-  '/inbox': typeof InboxRoute
-  '/orders': typeof OrdersRoute
-  '/products': typeof ProductsRoute
-  '/settings': typeof SettingsRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/couriers': typeof AppCouriersRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/inbox': typeof AppInboxRoute
+  '/_app/products': typeof AppProductsRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/analytics'
-    | '/delivery'
+    | '/couriers'
+    | '/dashboard'
     | '/inbox'
-    | '/orders'
     | '/products'
     | '/settings'
+    | '/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/analytics'
-    | '/delivery'
+    | '/couriers'
+    | '/dashboard'
     | '/inbox'
-    | '/orders'
     | '/products'
     | '/settings'
+    | '/orders'
   id:
     | '__root__'
-    | '/'
-    | '/analytics'
-    | '/delivery'
-    | '/inbox'
-    | '/orders'
-    | '/products'
-    | '/settings'
+    | '/_app/analytics'
+    | '/_app/couriers'
+    | '/_app/dashboard'
+    | '/_app/inbox'
+    | '/_app/products'
+    | '/_app/settings'
+    | '/_app/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AnalyticsRoute: typeof AnalyticsRoute
-  DeliveryRoute: typeof DeliveryRoute
-  InboxRoute: typeof InboxRoute
-  OrdersRoute: typeof OrdersRoute
-  ProductsRoute: typeof ProductsRoute
-  SettingsRoute: typeof SettingsRoute
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppCouriersRoute: typeof AppCouriersRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppInboxRoute: typeof AppInboxRoute
+  AppProductsRoute: typeof AppProductsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppOrdersIndexRoute: typeof AppOrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/analytics': {
-      id: '/analytics'
+    '/_app/analytics': {
+      id: '/_app/analytics'
       path: '/analytics'
       fullPath: '/analytics'
-      preLoaderRoute: typeof AnalyticsRouteImport
+      preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/delivery': {
-      id: '/delivery'
-      path: '/delivery'
-      fullPath: '/delivery'
-      preLoaderRoute: typeof DeliveryRouteImport
+    '/_app/couriers': {
+      id: '/_app/couriers'
+      path: '/couriers'
+      fullPath: '/couriers'
+      preLoaderRoute: typeof AppCouriersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/inbox': {
-      id: '/inbox'
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/inbox': {
+      id: '/_app/inbox'
       path: '/inbox'
       fullPath: '/inbox'
-      preLoaderRoute: typeof InboxRouteImport
+      preLoaderRoute: typeof AppInboxRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/orders': {
-      id: '/orders'
-      path: '/orders'
-      fullPath: '/orders'
-      preLoaderRoute: typeof OrdersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/products': {
-      id: '/products'
+    '/_app/products': {
+      id: '/_app/products'
       path: '/products'
       fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
+      preLoaderRoute: typeof AppProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings': {
-      id: '/settings'
+    '/_app/settings': {
+      id: '/_app/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/orders/': {
+      id: '/_app/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof AppOrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AnalyticsRoute: AnalyticsRoute,
-  DeliveryRoute: DeliveryRoute,
-  InboxRoute: InboxRoute,
-  OrdersRoute: OrdersRoute,
-  ProductsRoute: ProductsRoute,
-  SettingsRoute: SettingsRoute,
+  AppAnalyticsRoute: AppAnalyticsRoute,
+  AppCouriersRoute: AppCouriersRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppInboxRoute: AppInboxRoute,
+  AppProductsRoute: AppProductsRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppOrdersIndexRoute: AppOrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
