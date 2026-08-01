@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { MobileNav, Sidebar } from "@/components/sellerflow/nav";
+import { SellerFlowProvider } from "@/lib/sellerflow-store";
+import { Toaster } from "@/components/ui/sonner";
+
 
 function NotFoundComponent() {
   return (
@@ -77,19 +81,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SellerFlow BD" },
+      {
+        name: "description",
+        content: "Order, inbox and delivery console for Bangladesh social commerce sellers.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -99,6 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -119,8 +129,20 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <SellerFlowProvider>
+        <div className="min-h-screen">
+          <Sidebar />
+          <main className="w-full px-4 pb-24 pt-6 md:ml-[250px] md:w-[calc(100%-250px)] md:px-10 md:pb-12">
+            <div className="mx-auto max-w-[1700px]">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </div>
+          </main>
+          <MobileNav />
+        </div>
+        <Toaster position="bottom-right" richColors />
+      </SellerFlowProvider>
     </QueryClientProvider>
   );
 }
+
