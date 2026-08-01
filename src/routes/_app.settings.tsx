@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/sellerflow/page-header";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_app/settings")({
   head: () => ({
     meta: [
       { title: "Settings — SellerFlow BD" },

@@ -6,7 +6,7 @@ import { channelDotClass, channelShare } from "@/lib/sellerflow-data";
 import { useSellerFlow } from "@/lib/sellerflow-store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({
     meta: [
       { title: "SellerFlow BD — Social commerce order console" },

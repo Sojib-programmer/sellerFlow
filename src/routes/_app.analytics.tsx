@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/sellerflow/page-header";
 import { BarChart, KpiCard, Panel } from "@/components/sellerflow/primitives";
 
-export const Route = createFileRoute("/analytics")({
+export const Route = createFileRoute("/_app/analytics")({
   head: () => ({
     meta: [
       { title: "Analytics — SellerFlow BD" },

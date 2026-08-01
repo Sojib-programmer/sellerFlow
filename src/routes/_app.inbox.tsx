@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { conversations } from "@/lib/sellerflow-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/inbox")({
+export const Route = createFileRoute("/_app/inbox")({
   head: () => ({
     meta: [
       { title: "Unified inbox — SellerFlow BD" },
