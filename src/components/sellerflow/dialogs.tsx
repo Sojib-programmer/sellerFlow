@@ -41,7 +41,7 @@ export function NewOrderDialog({
   onOpenChange,
 }: {
   open: boolean;
-  prefill?: Prefill;
+  prefill?: Prefill | undefined;
   onOpenChange: (open: boolean) => void;
 }) {
   const { products, createOrder } = useSellerFlow();
