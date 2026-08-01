@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "sellerflow",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -8,12 +8,16 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "test:smoke": "node tests/smoke.mjs",
     "perf:budget": "node scripts/perf-budget.mjs",
     "perf:routes": "node scripts/route-perf.mjs",
-    "perf": "node scripts/perf-budget.mjs && node scripts/route-perf.mjs"
+    "perf": "node scripts/perf-budget.mjs && node scripts/route-perf.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "check": "npm run typecheck && npm run lint && npm run format:check"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
