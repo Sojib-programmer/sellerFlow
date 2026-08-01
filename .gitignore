@@ -30,3 +30,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+test-artifacts
+perf-report-bundle.json
+perf-report-routes.json

@@ -14,11 +14,13 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
 import { Route as AppCouriersRouteImport } from './routes/_app.couriers'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppDiagnosticsRouteImport } from './routes/_app.diagnostics'
 import { Route as AppInboxRouteImport } from './routes/_app.inbox'
 import { Route as AppProductsRouteImport } from './routes/_app.products'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppOrdersIndexRouteImport } from './routes/_app.orders.index'
 import { Route as AppOrdersNewRouteImport } from './routes/_app.orders.new'
+import { Route as ApiPublicTelemetryRouteImport } from './routes/api/public/telemetry'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,6 +44,11 @@ const AppCouriersRoute = AppCouriersRouteImport.update({
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDiagnosticsRoute = AppDiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInboxRoute = AppInboxRouteImport.update({
@@ -69,16 +76,23 @@ const AppOrdersNewRoute = AppOrdersNewRouteImport.update({
   path: '/orders/new',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicTelemetryRoute = ApiPublicTelemetryRouteImport.update({
+  id: '/api/public/telemetry',
+  path: '/api/public/telemetry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AppAnalyticsRoute
   '/couriers': typeof AppCouriersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/diagnostics': typeof AppDiagnosticsRoute
   '/inbox': typeof AppInboxRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
   '/orders/new': typeof AppOrdersNewRoute
+  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
   '/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -86,10 +100,12 @@ export interface FileRoutesByTo {
   '/analytics': typeof AppAnalyticsRoute
   '/couriers': typeof AppCouriersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/diagnostics': typeof AppDiagnosticsRoute
   '/inbox': typeof AppInboxRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
   '/orders/new': typeof AppOrdersNewRoute
+  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
   '/orders': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesById {
@@ -99,10 +115,12 @@ export interface FileRoutesById {
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/couriers': typeof AppCouriersRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/diagnostics': typeof AppDiagnosticsRoute
   '/_app/inbox': typeof AppInboxRoute
   '/_app/products': typeof AppProductsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/orders/new': typeof AppOrdersNewRoute
+  '/api/public/telemetry': typeof ApiPublicTelemetryRoute
   '/_app/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRouteTypes {
@@ -112,10 +130,12 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/couriers'
     | '/dashboard'
+    | '/diagnostics'
     | '/inbox'
     | '/products'
     | '/settings'
     | '/orders/new'
+    | '/api/public/telemetry'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -123,10 +143,12 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/couriers'
     | '/dashboard'
+    | '/diagnostics'
     | '/inbox'
     | '/products'
     | '/settings'
     | '/orders/new'
+    | '/api/public/telemetry'
     | '/orders'
   id:
     | '__root__'
@@ -135,16 +157,19 @@ export interface FileRouteTypes {
     | '/_app/analytics'
     | '/_app/couriers'
     | '/_app/dashboard'
+    | '/_app/diagnostics'
     | '/_app/inbox'
     | '/_app/products'
     | '/_app/settings'
     | '/_app/orders/new'
+    | '/api/public/telemetry'
     | '/_app/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  ApiPublicTelemetryRoute: typeof ApiPublicTelemetryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -184,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/diagnostics': {
+      id: '/_app/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/diagnostics'
+      preLoaderRoute: typeof AppDiagnosticsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/inbox': {
       id: '/_app/inbox'
       path: '/inbox'
@@ -219,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrdersNewRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/telemetry': {
+      id: '/api/public/telemetry'
+      path: '/api/public/telemetry'
+      fullPath: '/api/public/telemetry'
+      preLoaderRoute: typeof ApiPublicTelemetryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -226,6 +265,7 @@ interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppCouriersRoute: typeof AppCouriersRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppDiagnosticsRoute: typeof AppDiagnosticsRoute
   AppInboxRoute: typeof AppInboxRoute
   AppProductsRoute: typeof AppProductsRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -237,6 +277,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
   AppCouriersRoute: AppCouriersRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppDiagnosticsRoute: AppDiagnosticsRoute,
   AppInboxRoute: AppInboxRoute,
   AppProductsRoute: AppProductsRoute,
   AppSettingsRoute: AppSettingsRoute,
@@ -249,17 +290,8 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  ApiPublicTelemetryRoute: ApiPublicTelemetryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
