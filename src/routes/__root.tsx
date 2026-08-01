@@ -12,7 +12,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SellerFlowProvider } from "@/lib/sellerflow-store";
-import { SellerFlowProvider } from "@/lib/sellerflow-store";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -130,16 +129,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SellerFlowProvider>
-        <div className="min-h-screen">
-          <Sidebar />
-          <main className="w-full px-4 pb-24 pt-6 md:ml-[250px] md:w-[calc(100%-250px)] md:px-10 md:pb-12">
-            <div className="mx-auto max-w-[1700px]">
-              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-              <Outlet />
-            </div>
-          </main>
-          <MobileNav />
-        </div>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+
         <Toaster position="bottom-right" richColors />
       </SellerFlowProvider>
     </QueryClientProvider>
