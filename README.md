@@ -1,14 +1,11 @@
-# project 2
+sellerFlow
 
-Implement exactly the screenshot and nothing else
+**Live app**: (https://marginmap.assistant.bd)
 
-This project was built with [Lovable](https://lovable.dev).
+Build by Sojib Ahmmed
 
-**Live app**: https://pixel-perfect-render-616.lovable.app
 
-## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/8f0f79e8-5191-499d-917f-cb25ba5e869a).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
