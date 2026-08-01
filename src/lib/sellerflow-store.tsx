@@ -43,9 +43,10 @@ export function SellerFlowProvider({ children }: { children: ReactNode }) {
 
   const createOrder = useCallback(
     (draft: NewOrderDraft) => {
-      const product =
-        products.find((p) => p.sku === draft.productSku) ?? products[0];
+      const product = products.find((p) => p.sku === draft.productSku) ?? products[0];
+      if (!product) return "";
       const id = `SFB-${1083 + orders.length}`;
+
 
       setOrders((prev) => [
         {
