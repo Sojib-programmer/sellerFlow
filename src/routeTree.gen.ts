@@ -18,6 +18,7 @@ import { Route as AppInboxRouteImport } from './routes/_app.inbox'
 import { Route as AppProductsRouteImport } from './routes/_app.products'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppOrdersIndexRouteImport } from './routes/_app.orders.index'
+import { Route as AppOrdersNewRouteImport } from './routes/_app.orders.new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,6 +64,11 @@ const AppOrdersIndexRoute = AppOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrdersNewRoute = AppOrdersNewRouteImport.update({
+  id: '/orders/new',
+  path: '/orders/new',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/inbox': typeof AppInboxRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
+  '/orders/new': typeof AppOrdersNewRoute
   '/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/inbox': typeof AppInboxRoute
   '/products': typeof AppProductsRoute
   '/settings': typeof AppSettingsRoute
+  '/orders/new': typeof AppOrdersNewRoute
   '/orders': typeof AppOrdersIndexRoute
 }
 export interface FileRoutesById {
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/_app/inbox': typeof AppInboxRoute
   '/_app/products': typeof AppProductsRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/orders/new': typeof AppOrdersNewRoute
   '/_app/orders/': typeof AppOrdersIndexRoute
 }
 export interface FileRouteTypes {
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/products'
     | '/settings'
+    | '/orders/new'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/products'
     | '/settings'
+    | '/orders/new'
     | '/orders'
   id:
     | '__root__'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/_app/inbox'
     | '/_app/products'
     | '/_app/settings'
+    | '/_app/orders/new'
     | '/_app/orders/'
   fileRoutesById: FileRoutesById
 }
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrdersIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/orders/new': {
+      id: '/_app/orders/new'
+      path: '/orders/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof AppOrdersNewRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -210,6 +229,7 @@ interface AppRouteChildren {
   AppInboxRoute: typeof AppInboxRoute
   AppProductsRoute: typeof AppProductsRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppOrdersNewRoute: typeof AppOrdersNewRoute
   AppOrdersIndexRoute: typeof AppOrdersIndexRoute
 }
 
@@ -220,6 +240,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppInboxRoute: AppInboxRoute,
   AppProductsRoute: AppProductsRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppOrdersNewRoute: AppOrdersNewRoute,
   AppOrdersIndexRoute: AppOrdersIndexRoute,
 }
 
