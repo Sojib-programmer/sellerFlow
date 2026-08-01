@@ -266,11 +266,15 @@ export const updateOrder = createServerFn({ method: "POST" })
     if (memberError) throw new Error(memberError.message);
     if (!membership) throw new Error("No store found for this account");
 
-    const patch: Record<string, unknown> = {};
-    if (data.status) patch["status"] = toDbStatus(data.status);
-    if (data.courier !== undefined) patch["courier_name"] = data.courier || null;
+    const patch: {
+      status?: ReturnType<typeof toDbStatus>;
+      courier_name?: string | null;
+      tracking_number?: string | null;
+    } = {};
+    if (data.status) patch.status = toDbStatus(data.status);
+    if (data.courier !== undefined) patch.courier_name = data.courier || null;
     if (data.trackingNumber !== undefined)
-      patch["tracking_number"] = data.trackingNumber.trim() || null;
+      patch.tracking_number = data.trackingNumber.trim() || null;
 
     const { error } = await supabase
       .from("orders")
