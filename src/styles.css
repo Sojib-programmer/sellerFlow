@@ -54,10 +54,20 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-coral: var(--coral);
+  --color-coral-foreground: var(--coral-foreground);
+  --color-coral-soft: var(--coral-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-primary-soft: var(--primary-soft);
 
   --shadow-card: 0 1px 2px oklch(0.267 0.055 253 / 4%);
   --shadow-primary: 0 3px 10px oklch(0.505 0.107 165 / 22%);
+  --shadow-lift: 0 2px 4px oklch(0.267 0.055 253 / 6%), 0 16px 40px oklch(0.267 0.055 253 / 9%);
   --shadow-overlay: 0 20px 65px oklch(0.267 0.055 253 / 26%);
+
 }
 
 :root {
@@ -106,6 +116,16 @@
   --sidebar-border: oklch(0.937 0.011 240);
   --sidebar-ring: oklch(0.505 0.107 165);
 
+  --navy: oklch(0.267 0.055 253);
+  --navy-foreground: oklch(0.99 0.005 240);
+  --primary-soft: oklch(0.955 0.033 165);
+  --coral: oklch(0.665 0.17 24);
+  --coral-foreground: oklch(0.99 0.01 20);
+  --coral-soft: oklch(0.955 0.03 26);
+  --amber: oklch(0.74 0.15 72);
+  --amber-soft: oklch(0.96 0.045 82);
+
+
   /* Order lifecycle tokens */
   --status-new-bg: oklch(0.945 0.03 255);
   --status-new-fg: oklch(0.52 0.14 258);
@@ -145,6 +165,15 @@
   --accent-foreground: oklch(0.85 0.1 165);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
+  --navy: oklch(0.19 0.03 253);
+  --navy-foreground: oklch(0.97 0.005 240);
+  --primary-soft: oklch(0.3 0.05 165);
+  --coral: oklch(0.7 0.16 24);
+  --coral-foreground: oklch(0.19 0.028 259);
+  --coral-soft: oklch(0.32 0.06 26);
+  --amber: oklch(0.78 0.14 72);
+  --amber-soft: oklch(0.33 0.06 82);
+
   --sidebar: oklch(0.235 0.032 253);
   --sidebar-foreground: oklch(0.85 0.02 245);
   --sidebar-border: oklch(1 0 0 / 12%);
@@ -218,7 +247,19 @@
   background: var(--channel-instagram);
 }
 
+@utility card-surface {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
 @utility bar-fill {
+
   background: linear-gradient(to top, var(--primary), oklch(0.7 0.11 168));
   border-radius: 5px 5px 0 0;
 }
