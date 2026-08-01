@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  Activity,
   BarChart3,
   Inbox,
   LayoutDashboard,
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -32,6 +34,7 @@ const NAV = [
   { to: "/products", label: "Products", icon: Package },
   { to: "/couriers", label: "Couriers", icon: Truck },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/diagnostics", label: "Diagnostics", icon: Activity },
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
@@ -39,6 +42,15 @@ const MOBILE_PRIMARY = NAV.slice(0, 4);
 const MOBILE_MORE = NAV.slice(4);
 
 const STORE = { name: "Dan’s Store", owner: "Dan Luca · Growth plan" };
+
+const FOCUS_RING =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
+// `startsWith` alone marks /orders active on /orders/new, which would announce two
+// current pages. Match the exact path only, so at most one item is current.
+function isActive(pathname: string, to: string) {
+  return pathname === to || pathname === `${to}/`;
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { orders } = useSellerFlow();
@@ -49,26 +61,43 @@ export function AppShell({ children }: { children: ReactNode }) {
   const newOrders = orders.filter((o) => o.status === "New").length;
   const badgeFor = (to: string) =>
     to === "/inbox" ? unread : to === "/orders" ? newOrders : 0;
+  const badgeLabelFor = (to: string) =>
+    to === "/inbox" ? "unread conversations" : "new orders";
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-sidebar lg:flex">
+    <div className="min-h-dvh bg-background">
+      <a
+        href="#main-content"
+        className={cn(
+          "sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground",
+          FOCUS_RING,
+        )}
+      >
+        Skip to content
+      </a>
+
+      {/* Desktop sidebar — display:none below lg, so it is absent from the a11y tree there */}
+      <aside
+        data-testid="app-sidebar"
+        className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-sidebar lg:flex"
+      >
         <div className="flex h-16 items-center border-b border-border px-5">
-          <Link to="/dashboard" aria-label="SellerFlow BD home">
+          <Link to="/dashboard" aria-label="SellerFlow BD home" className={cn("rounded-md", FOCUS_RING)}>
             <Logo />
           </Link>
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Main navigation">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Sidebar navigation">
           {NAV.map((n) => {
-            const active = pathname.startsWith(n.to);
+            const active = isActive(pathname, n.to);
             const count = badgeFor(n.to);
             return (
               <Link
                 key={n.to}
                 to={n.to}
+                aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  FOCUS_RING,
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -77,9 +106,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <n.icon className="size-4 shrink-0" aria-hidden />
                 <span className="min-w-0 flex-1 truncate">{n.label}</span>
                 {count > 0 ? (
-                  <span className="num rounded-full bg-coral px-1.5 py-0.5 text-[10px] font-bold text-coral-foreground">
-                    {count}
-                  </span>
+                  <>
+                    <span
+                      aria-hidden
+                      className="num rounded-full bg-coral px-1.5 py-0.5 text-[10px] font-bold text-coral-foreground"
+                    >
+                      {count}
+                    </span>
+                    <span className="sr-only">{`${count} ${badgeLabelFor(n.to)}`}</span>
+                  </>
                 ) : null}
               </Link>
             );
@@ -101,10 +136,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border bg-surface px-4 lg:hidden">
-        <Link to="/dashboard" aria-label="SellerFlow BD home" className="min-w-0">
+        <Link
+          to="/dashboard"
+          aria-label="SellerFlow BD home"
+          className={cn("min-w-0 rounded-md", FOCUS_RING)}
+        >
           <Logo size="sm" />
         </Link>
-        <Button asChild size="sm" className="shrink-0 gap-1.5">
+        <Button asChild size="sm" className="min-h-11 shrink-0 gap-1.5">
           <Link to="/orders/new">
             <Plus className="size-4" aria-hidden />
             New
@@ -112,36 +151,45 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Button>
       </header>
 
-      <main className="pb-24 lg:pb-10 lg:pl-64">
+      <main id="main-content" className="pb-24 lg:pb-10 lg:pl-64">
         <div className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
           {children}
           <SiteFooter />
         </div>
       </main>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav — display:none at lg and above */}
       <nav
+        data-testid="app-bottom-nav"
         className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
-        aria-label="Primary"
+        aria-label="Primary navigation"
       >
         {MOBILE_PRIMARY.map((n) => {
-          const active = pathname.startsWith(n.to);
+          const active = isActive(pathname, n.to);
           const count = badgeFor(n.to);
           return (
             <Link
               key={n.to}
               to={n.to}
+              aria-current={active ? "page" : undefined}
               className={cn(
-                "relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+                "relative flex min-h-11 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+                FOCUS_RING,
                 active ? "text-primary" : "text-muted-foreground",
               )}
             >
               <n.icon className="size-5" aria-hidden />
               {n.label}
               {count > 0 ? (
-                <span className="num absolute top-1.5 right-[22%] rounded-full bg-coral px-1 text-[9px] font-bold text-coral-foreground">
-                  {count}
-                </span>
+                <>
+                  <span
+                    aria-hidden
+                    className="num absolute top-1.5 right-[22%] rounded-full bg-coral px-1 text-[9px] font-bold text-coral-foreground"
+                  >
+                    {count}
+                  </span>
+                  <span className="sr-only">{`${count} ${badgeLabelFor(n.to)}`}</span>
+                </>
               ) : null}
             </Link>
           );
@@ -149,8 +197,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
           <SheetTrigger
             className={cn(
-              "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium",
-              MOBILE_MORE.some((n) => pathname.startsWith(n.to))
+              "flex min-h-11 flex-col items-center gap-1 py-2.5 text-[11px] font-medium",
+              FOCUS_RING,
+              MOBILE_MORE.some((n) => isActive(pathname, n.to))
                 ? "text-primary"
                 : "text-muted-foreground",
             )}
@@ -162,14 +211,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           <SheetContent side="bottom" className="rounded-t-2xl">
             <SheetHeader>
               <SheetTitle>More</SheetTitle>
+              <SheetDescription>
+                Additional SellerFlow sections: couriers, analytics, diagnostics and settings.
+              </SheetDescription>
             </SheetHeader>
             <div className="grid gap-1 px-4 pb-6">
               {MOBILE_MORE.map((n) => (
                 <Link
                   key={n.to}
                   to={n.to}
+                  aria-current={isActive(pathname, n.to) ? "page" : undefined}
                   onClick={() => setMoreOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium hover:bg-muted"
+                  className={cn(
+                    "flex min-h-11 items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium hover:bg-muted",
+                    FOCUS_RING,
+                  )}
                 >
                   <n.icon className="size-4" aria-hidden />
                   {n.label}
