@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 import { groupEvents, type ErrorEvent, type ErrorGroup } from "./telemetry-types";
 
@@ -12,12 +13,25 @@ export type DiagnosticsSnapshot = {
   webhookConfigured: boolean;
 };
 
-// Read side of the telemetry pipeline. Not exposed as an HTTP route: server
-// functions inherit site auth on the published deployment, so the diagnostics
-// data is not reachable from the open internet the way /api/public/* is.
-export const getDiagnostics = createServerFn({ method: "GET" }).handler(
-  async (): Promise<DiagnosticsSnapshot> => {
+// Read side of the telemetry pipeline. Auth-gated and further restricted to
+// store owners: the buffer holds stack traces, route paths and session IDs.
+export const getDiagnostics = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<DiagnosticsSnapshot> => {
+    const { data: ownerRows, error } = await context.supabase
+      .from("store_members")
+      .select("id")
+      .eq("user_id", context.userId)
+      .eq("role", "owner")
+      .limit(1);
+    if (error) throw new Error("Forbidden");
+    if (!ownerRows || ownerRows.length === 0) {
+      throw new Error("Forbidden: store owner access required");
+    }
+
+
     const { readEvents } = await import("./telemetry-sink.server");
+
     const events = readEvents();
     const byLevel: Record<string, number> = {};
     for (const event of events) byLevel[event.level] = (byLevel[event.level] ?? 0) + 1;
