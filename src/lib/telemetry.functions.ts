@@ -18,11 +18,17 @@ export type DiagnosticsSnapshot = {
 export const getDiagnostics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<DiagnosticsSnapshot> => {
-    const { data: isOwner, error } = await context.supabase.rpc("has_store_role_any", {
-      _role: "owner",
-    });
+    const { data: ownerRows, error } = await context.supabase
+      .from("store_members")
+      .select("id")
+      .eq("user_id", context.userId)
+      .eq("role", "owner")
+      .limit(1);
     if (error) throw new Error("Forbidden");
-    if (!isOwner) throw new Error("Forbidden: store owner access required");
+    if (!ownerRows || ownerRows.length === 0) {
+      throw new Error("Forbidden: store owner access required");
+    }
+
 
     const { readEvents } = await import("./telemetry-sink.server");
 
