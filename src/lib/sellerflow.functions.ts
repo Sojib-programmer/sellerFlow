@@ -63,9 +63,10 @@ export const getWorkspace = createServerFn({ method: "GET" })
       | { id: string; name: string; slug: string; created_at: string }
       | null
       | undefined;
-    if (!membership || !storeRow) return { store: null, orders: [], products: [] };
+    if (!membership || !storeRow)
+      return { store: null, orders: [], products: [], customers: [] };
 
-    const [productsRes, ordersRes] = await Promise.all([
+    const [productsRes, ordersRes, customersRes] = await Promise.all([
       supabase
         .from("products")
         .select("*")
@@ -74,8 +75,14 @@ export const getWorkspace = createServerFn({ method: "GET" })
       supabase
         .from("orders")
         .select(
-          "id, order_number, channel, status, subtotal, delivery_charge, cod_amount, courier_name, tracking_number, delivery_district, delivery_address, created_at, customers(name, phone, district, address), order_items(quantity, unit_price, total, product_id, products(name))",
+          "id, order_number, channel, status, subtotal, delivery_charge, cod_amount, courier_name, tracking_number, delivery_district, delivery_address, created_at, customer_id, customers(name, phone, district, address), order_items(quantity, unit_price, total, product_id, products(name))",
         )
+        .eq("store_id", membership.store_id)
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabase
+        .from("customers")
+        .select("id, name, phone, district")
         .eq("store_id", membership.store_id)
         .order("created_at", { ascending: false })
         .limit(500),
@@ -83,6 +90,7 @@ export const getWorkspace = createServerFn({ method: "GET" })
 
     if (productsRes.error) throw new Error(productsRes.error.message);
     if (ordersRes.error) throw new Error(ordersRes.error.message);
+    if (customersRes.error) throw new Error(customersRes.error.message);
 
     const soldByProduct = new Map<string, number>();
     const orders: Order[] = (ordersRes.data ?? []).map((row) => {
