@@ -17,10 +17,19 @@ export type StoreInfo = {
   createdAt: string;
 };
 
+export type CustomerInfo = {
+  id: string;
+  name: string;
+  phone: string;
+  district: string;
+  orders: number;
+};
+
 export type Workspace = {
   store: StoreInfo | null;
   orders: Order[];
   products: Product[];
+  customers: CustomerInfo[];
 };
 
 export type CreateOrderInput = {
