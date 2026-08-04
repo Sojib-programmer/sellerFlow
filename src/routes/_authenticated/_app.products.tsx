@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { money } from "@/lib/sellerflow-data";
 import { useSellerFlow } from "@/lib/sellerflow-store";
 
-export const Route = createFileRoute("/_app/products")({
+export const Route = createFileRoute("/_authenticated/_app/products")({
   head: () => ({
     meta: [
       { title: "Products & inventory — SellerFlow BD" },

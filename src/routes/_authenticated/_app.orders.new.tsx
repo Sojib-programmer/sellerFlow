@@ -32,7 +32,7 @@ interface NewSearch {
   district: string;
 }
 
-export const Route = createFileRoute("/_app/orders/new")({
+export const Route = createFileRoute("/_authenticated/_app/orders/new")({
   validateSearch: (s: Record<string, unknown>): NewSearch => ({
     customer: typeof s["customer"] === "string" ? s["customer"] : "",
     phone: typeof s["phone"] === "string" ? s["phone"] : "",

@@ -14,7 +14,7 @@ import {
 import { ORDER_STATUSES } from "@/lib/sellerflow-data";
 import { useSellerFlow } from "@/lib/sellerflow-store";
 
-export const Route = createFileRoute("/_app/orders/")({
+export const Route = createFileRoute("/_authenticated/_app/orders/")({
   head: () => ({
     meta: [
       { title: "Orders — SellerFlow BD" },

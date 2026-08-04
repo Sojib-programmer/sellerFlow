@@ -9,7 +9,7 @@ import { getDiagnostics } from "@/lib/telemetry.functions";
 import { clearLocalTelemetry, localTelemetry } from "@/lib/telemetry-client";
 import { groupEvents, type ErrorEvent, type ErrorGroup } from "@/lib/telemetry-types";
 
-export const Route = createFileRoute("/_app/diagnostics")({
+export const Route = createFileRoute("/_authenticated/_app/diagnostics")({
   head: () => ({
     meta: [
       { title: "Diagnostics — SellerFlow BD" },
