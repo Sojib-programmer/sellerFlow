@@ -130,8 +130,19 @@ export const getWorkspace = createServerFn({ method: "GET" })
         courier: row.courier_name ?? "Not assigned",
         payment: Number(row.cod_amount) > 0 ? "COD" : "Prepaid",
         tracking: row.tracking_number ?? "",
+        createdAt: row.created_at,
       };
     });
+
+    const orderCountByCustomer = new Map<string, number>();
+    for (const row of ordersRes.data ?? []) {
+      if (row.customer_id) {
+        orderCountByCustomer.set(
+          row.customer_id,
+          (orderCountByCustomer.get(row.customer_id) ?? 0) + 1,
+        );
+      }
+    }
 
     const products: Product[] = (productsRes.data ?? []).map((p) => ({
       id: p.id,
@@ -144,6 +155,14 @@ export const getWorkspace = createServerFn({ method: "GET" })
       active: p.active,
     }));
 
+    const customers: CustomerInfo[] = (customersRes.data ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      phone: c.phone,
+      district: c.district ?? "",
+      orders: orderCountByCustomer.get(c.id) ?? 0,
+    }));
+
     return {
       store: {
         id: storeRow.id,
@@ -154,6 +173,7 @@ export const getWorkspace = createServerFn({ method: "GET" })
       },
       orders,
       products,
+      customers,
     };
   });
 
