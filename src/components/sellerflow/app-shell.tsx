@@ -57,11 +57,26 @@ function isActive(pathname: string, to: string) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { orders } = useSellerFlow();
+  const { orders, store, isLoading } = useSellerFlow();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [email, setEmail] = useState("");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+  }, []);
+
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    void navigate({ to: "/auth", replace: true });
+  };
 
   const unread = conversations.length;
+
   const newOrders = orders.filter((o) => o.status === "New").length;
   const badgeFor = (to: string) =>
     to === "/inbox" ? unread : to === "/orders" ? newOrders : 0;
