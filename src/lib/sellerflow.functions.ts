@@ -441,3 +441,49 @@ export const loadDemoData = createServerFn({ method: "POST" })
 
     return { orders: orderRows.length, products: DEMO_PRODUCTS.length };
   });
+
+export const upsertProduct = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (input: {
+      name: string;
+      sku: string;
+      price: number;
+      stock: number;
+      lowStockThreshold?: number;
+    }) => input,
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: membership, error: memberError } = await supabase
+      .from("store_members")
+      .select("store_id, role")
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+    if (memberError) throw new Error(memberError.message);
+    if (!membership) throw new Error("No store found for this account");
+    if (membership.role === "staff")
+      throw new Error("Staff members cannot change the catalogue");
+
+    const name = data.name.trim();
+    const sku = data.sku.trim().toUpperCase();
+    if (!name || !sku) throw new Error("Product name and SKU are required");
+    if (!Number.isFinite(data.price) || data.price < 0)
+      throw new Error("Enter a valid selling price");
+
+    const { error } = await supabase.from("products").upsert(
+      {
+        store_id: membership.store_id,
+        name,
+        sku,
+        selling_price: data.price,
+        stock_quantity: Math.max(0, Math.round(data.stock)),
+        low_stock_threshold: Math.max(0, Math.round(data.lowStockThreshold ?? 5)),
+        active: true,
+      },
+      { onConflict: "store_id,sku" },
+    );
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
