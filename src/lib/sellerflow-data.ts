@@ -21,14 +21,19 @@ export type Order = {
   status: OrderStatus;
   courier: string;
   payment: "COD" | "Prepaid";
+  tracking?: string;
+  createdAt?: string;
 };
 
 export type Product = {
+  id?: string;
   name: string;
   sku: string;
   stock: number;
   price: number;
   sales: number;
+  lowStockThreshold?: number;
+  active?: boolean;
 };
 
 export const ORDER_STATUSES: OrderStatus[] = [
