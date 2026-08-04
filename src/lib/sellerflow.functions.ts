@@ -17,10 +17,19 @@ export type StoreInfo = {
   createdAt: string;
 };
 
+export type CustomerInfo = {
+  id: string;
+  name: string;
+  phone: string;
+  district: string;
+  orders: number;
+};
+
 export type Workspace = {
   store: StoreInfo | null;
   orders: Order[];
   products: Product[];
+  customers: CustomerInfo[];
 };
 
 export type CreateOrderInput = {
@@ -54,9 +63,10 @@ export const getWorkspace = createServerFn({ method: "GET" })
       | { id: string; name: string; slug: string; created_at: string }
       | null
       | undefined;
-    if (!membership || !storeRow) return { store: null, orders: [], products: [] };
+    if (!membership || !storeRow)
+      return { store: null, orders: [], products: [], customers: [] };
 
-    const [productsRes, ordersRes] = await Promise.all([
+    const [productsRes, ordersRes, customersRes] = await Promise.all([
       supabase
         .from("products")
         .select("*")
@@ -65,8 +75,14 @@ export const getWorkspace = createServerFn({ method: "GET" })
       supabase
         .from("orders")
         .select(
-          "id, order_number, channel, status, subtotal, delivery_charge, cod_amount, courier_name, tracking_number, delivery_district, delivery_address, created_at, customers(name, phone, district, address), order_items(quantity, unit_price, total, product_id, products(name))",
+          "id, order_number, channel, status, subtotal, delivery_charge, cod_amount, courier_name, tracking_number, delivery_district, delivery_address, created_at, customer_id, customers(name, phone, district, address), order_items(quantity, unit_price, total, product_id, products(name))",
         )
+        .eq("store_id", membership.store_id)
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabase
+        .from("customers")
+        .select("id, name, phone, district")
         .eq("store_id", membership.store_id)
         .order("created_at", { ascending: false })
         .limit(500),
@@ -74,6 +90,7 @@ export const getWorkspace = createServerFn({ method: "GET" })
 
     if (productsRes.error) throw new Error(productsRes.error.message);
     if (ordersRes.error) throw new Error(ordersRes.error.message);
+    if (customersRes.error) throw new Error(customersRes.error.message);
 
     const soldByProduct = new Map<string, number>();
     const orders: Order[] = (ordersRes.data ?? []).map((row) => {
@@ -113,8 +130,19 @@ export const getWorkspace = createServerFn({ method: "GET" })
         courier: row.courier_name ?? "Not assigned",
         payment: Number(row.cod_amount) > 0 ? "COD" : "Prepaid",
         tracking: row.tracking_number ?? "",
+        createdAt: row.created_at,
       };
     });
+
+    const orderCountByCustomer = new Map<string, number>();
+    for (const row of ordersRes.data ?? []) {
+      if (row.customer_id) {
+        orderCountByCustomer.set(
+          row.customer_id,
+          (orderCountByCustomer.get(row.customer_id) ?? 0) + 1,
+        );
+      }
+    }
 
     const products: Product[] = (productsRes.data ?? []).map((p) => ({
       id: p.id,
@@ -127,6 +155,14 @@ export const getWorkspace = createServerFn({ method: "GET" })
       active: p.active,
     }));
 
+    const customers: CustomerInfo[] = (customersRes.data ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      phone: c.phone,
+      district: c.district ?? "",
+      orders: orderCountByCustomer.get(c.id) ?? 0,
+    }));
+
     return {
       store: {
         id: storeRow.id,
@@ -137,6 +173,7 @@ export const getWorkspace = createServerFn({ method: "GET" })
       },
       orders,
       products,
+      customers,
     };
   });
 
@@ -403,4 +440,50 @@ export const loadDemoData = createServerFn({ method: "POST" })
     if (itemError) throw new Error(itemError.message);
 
     return { orders: orderRows.length, products: DEMO_PRODUCTS.length };
+  });
+
+export const upsertProduct = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (input: {
+      name: string;
+      sku: string;
+      price: number;
+      stock: number;
+      lowStockThreshold?: number;
+    }) => input,
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: membership, error: memberError } = await supabase
+      .from("store_members")
+      .select("store_id, role")
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+    if (memberError) throw new Error(memberError.message);
+    if (!membership) throw new Error("No store found for this account");
+    if (membership.role === "staff")
+      throw new Error("Staff members cannot change the catalogue");
+
+    const name = data.name.trim();
+    const sku = data.sku.trim().toUpperCase();
+    if (!name || !sku) throw new Error("Product name and SKU are required");
+    if (!Number.isFinite(data.price) || data.price < 0)
+      throw new Error("Enter a valid selling price");
+
+    const { error } = await supabase.from("products").upsert(
+      {
+        store_id: membership.store_id,
+        name,
+        sku,
+        selling_price: data.price,
+        stock_quantity: Math.max(0, Math.round(data.stock)),
+        low_stock_threshold: Math.max(0, Math.round(data.lowStockThreshold ?? 5)),
+        active: true,
+      },
+      { onConflict: "store_id,sku" },
+    );
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });

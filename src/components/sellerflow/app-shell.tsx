@@ -1,9 +1,11 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Activity,
   BarChart3,
   Inbox,
   LayoutDashboard,
+  LogOut,
   MoreHorizontal,
   Package,
   Plus,
@@ -11,7 +13,9 @@ import {
   ShoppingBag,
   Truck,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 import { SiteFooter } from "./footer";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
@@ -41,7 +45,11 @@ const NAV = [
 const MOBILE_PRIMARY = NAV.slice(0, 4);
 const MOBILE_MORE = NAV.slice(4);
 
-const STORE = { name: "Dan’s Store", owner: "Dan Luca · Growth plan" };
+const ROLE_LABEL: Record<string, string> = {
+  owner: "Owner",
+  manager: "Manager",
+  staff: "Staff",
+};
 
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -53,11 +61,26 @@ function isActive(pathname: string, to: string) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { orders } = useSellerFlow();
+  const { orders, store, isLoading } = useSellerFlow();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [email, setEmail] = useState("");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+  }, []);
+
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    void navigate({ to: "/auth", replace: true });
+  };
 
   const unread = conversations.length;
+
   const newOrders = orders.filter((o) => o.status === "New").length;
   const badgeFor = (to: string) =>
     to === "/inbox" ? unread : to === "/orders" ? newOrders : 0;
@@ -128,9 +151,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           </Button>
           <div className="rounded-lg bg-muted px-3 py-2">
-            <p className="truncate text-sm font-semibold">{STORE.name}</p>
-            <p className="truncate text-xs text-muted-foreground">{STORE.owner}</p>
+            <p className="truncate text-sm font-semibold">
+              {store?.name ?? (isLoading ? "Loading store…" : "Your store")}
+            </p>
+            <p className="truncate text-xs text-muted-foreground">
+              {store ? `${ROLE_LABEL[store.role] ?? store.role} · ${email}` : email}
+            </p>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-2 w-full justify-start gap-2 text-muted-foreground"
+            onClick={signOut}
+          >
+            <LogOut className="size-4" aria-hidden />
+            Sign out
+          </Button>
+
         </div>
       </aside>
 

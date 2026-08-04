@@ -50,7 +50,7 @@ export function NewOrderDialog({
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState(DISTRICTS[0]!);
   const [channel, setChannel] = useState<Channel>(prefill?.channel ?? "Facebook");
-  const [sku, setSku] = useState(products[0]!.sku);
+  const [sku, setSku] = useState(products[0]?.sku ?? "");
   const [qty, setQty] = useState(1);
   const [courier, setCourier] = useState(COURIERS[0]!);
   const [payment, setPayment] = useState<"COD" | "Prepaid">("COD");
@@ -60,8 +60,9 @@ export function NewOrderDialog({
     return (p?.price ?? 0) * qty + DELIVERY_CHARGE;
   }, [products, sku, qty]);
 
-  const submit = () => {
-    const id = createOrder({
+  const submit = async () => {
+    try {
+      const id = await createOrder({
       name,
       phone,
       address,
@@ -72,8 +73,11 @@ export function NewOrderDialog({
       courier,
       payment,
     });
-    onOpenChange(false);
-    toast.success(`Order ${id} created successfully`);
+      onOpenChange(false);
+      toast.success(`Order ${id} created successfully`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not create order");
+    }
   };
 
   return (
@@ -209,7 +213,7 @@ export function NewOrderDialog({
         </div>
 
         <DialogFooter>
-          <Button className="w-full shadow-primary" onClick={submit}>
+          <Button className="w-full shadow-primary" onClick={() => void submit()}>
             Create order
           </Button>
         </DialogFooter>
@@ -313,10 +317,17 @@ export function OrderDetailsDialog({
           <Button
             className="w-full shadow-primary"
             onClick={() => {
-              updateStatus(order.id, current);
-              setNext(null);
-              onOpenChange(false);
-              toast.success("Order status updated");
+              void updateStatus(order.id, current)
+                .then(() => {
+                  setNext(null);
+                  onOpenChange(false);
+                  toast.success("Order status updated");
+                })
+                .catch((error: unknown) =>
+                  toast.error(
+                    error instanceof Error ? error.message : "Could not update status",
+                  ),
+                );
             }}
           >
             Update status

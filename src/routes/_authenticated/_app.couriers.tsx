@@ -5,7 +5,7 @@ import { useOrderDialogs } from "@/components/sellerflow/use-order-dialogs";
 import { couriersPerformance, money } from "@/lib/sellerflow-data";
 import { useSellerFlow } from "@/lib/sellerflow-store";
 
-export const Route = createFileRoute("/_app/couriers")({
+export const Route = createFileRoute("/_authenticated/_app/couriers")({
   head: () => ({
     meta: [
       { title: "Delivery & couriers — SellerFlow BD" },

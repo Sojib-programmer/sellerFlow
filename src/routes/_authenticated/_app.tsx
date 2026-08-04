@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/sellerflow/app-shell";
 
-export const Route = createFileRoute("/_app")({
+export const Route = createFileRoute("/_authenticated/_app")({
   component: AppLayout,
 });
 

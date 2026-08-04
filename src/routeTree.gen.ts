@@ -10,123 +10,157 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppAnalyticsRouteImport } from './routes/_app.analytics'
-import { Route as AppCouriersRouteImport } from './routes/_app.couriers'
-import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppDiagnosticsRouteImport } from './routes/_app.diagnostics'
-import { Route as AppInboxRouteImport } from './routes/_app.inbox'
-import { Route as AppProductsRouteImport } from './routes/_app.products'
-import { Route as AppSettingsRouteImport } from './routes/_app.settings'
-import { Route as AppOrdersIndexRouteImport } from './routes/_app.orders.index'
-import { Route as AppOrdersNewRouteImport } from './routes/_app.orders.new'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/_app'
+import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated/_app.analytics'
+import { Route as AuthenticatedAppCouriersRouteImport } from './routes/_authenticated/_app.couriers'
+import { Route as AuthenticatedAppDashboardRouteImport } from './routes/_authenticated/_app.dashboard'
+import { Route as AuthenticatedAppDiagnosticsRouteImport } from './routes/_authenticated/_app.diagnostics'
+import { Route as AuthenticatedAppInboxRouteImport } from './routes/_authenticated/_app.inbox'
+import { Route as AuthenticatedAppProductsRouteImport } from './routes/_authenticated/_app.products'
+import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/_app.settings'
 import { Route as ApiPublicTelemetryRouteImport } from './routes/api/public/telemetry'
+import { Route as AuthenticatedAppOrdersIndexRouteImport } from './routes/_authenticated/_app.orders.index'
+import { Route as AuthenticatedAppOrdersNewRouteImport } from './routes/_authenticated/_app.orders.new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => AppRoute,
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppCouriersRoute = AppCouriersRouteImport.update({
-  id: '/couriers',
-  path: '/couriers',
-  getParentRoute: () => AppRoute,
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AppRoute,
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AppDiagnosticsRoute = AppDiagnosticsRouteImport.update({
-  id: '/diagnostics',
-  path: '/diagnostics',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppInboxRoute = AppInboxRouteImport.update({
+const AuthenticatedAppAnalyticsRoute =
+  AuthenticatedAppAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppCouriersRoute =
+  AuthenticatedAppCouriersRouteImport.update({
+    id: '/couriers',
+    path: '/couriers',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDashboardRoute =
+  AuthenticatedAppDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDiagnosticsRoute =
+  AuthenticatedAppDiagnosticsRouteImport.update({
+    id: '/diagnostics',
+    path: '/diagnostics',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppInboxRoute = AuthenticatedAppInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const AppProductsRoute = AppProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrdersIndexRoute = AppOrdersIndexRouteImport.update({
-  id: '/orders/',
-  path: '/orders/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrdersNewRoute = AppOrdersNewRouteImport.update({
-  id: '/orders/new',
-  path: '/orders/new',
-  getParentRoute: () => AppRoute,
-} as any)
+const AuthenticatedAppProductsRoute =
+  AuthenticatedAppProductsRouteImport.update({
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppSettingsRoute =
+  AuthenticatedAppSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const ApiPublicTelemetryRoute = ApiPublicTelemetryRouteImport.update({
   id: '/api/public/telemetry',
   path: '/api/public/telemetry',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppOrdersIndexRoute =
+  AuthenticatedAppOrdersIndexRouteImport.update({
+    id: '/orders/',
+    path: '/orders/',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppOrdersNewRoute =
+  AuthenticatedAppOrdersNewRouteImport.update({
+    id: '/orders/new',
+    path: '/orders/new',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/analytics': typeof AppAnalyticsRoute
-  '/couriers': typeof AppCouriersRoute
-  '/dashboard': typeof AppDashboardRoute
-  '/diagnostics': typeof AppDiagnosticsRoute
-  '/inbox': typeof AppInboxRoute
-  '/products': typeof AppProductsRoute
-  '/settings': typeof AppSettingsRoute
-  '/orders/new': typeof AppOrdersNewRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/couriers': typeof AuthenticatedAppCouriersRoute
+  '/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/diagnostics': typeof AuthenticatedAppDiagnosticsRoute
+  '/inbox': typeof AuthenticatedAppInboxRoute
+  '/products': typeof AuthenticatedAppProductsRoute
+  '/settings': typeof AuthenticatedAppSettingsRoute
   '/api/public/telemetry': typeof ApiPublicTelemetryRoute
-  '/orders/': typeof AppOrdersIndexRoute
+  '/orders/new': typeof AuthenticatedAppOrdersNewRoute
+  '/orders/': typeof AuthenticatedAppOrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/analytics': typeof AppAnalyticsRoute
-  '/couriers': typeof AppCouriersRoute
-  '/dashboard': typeof AppDashboardRoute
-  '/diagnostics': typeof AppDiagnosticsRoute
-  '/inbox': typeof AppInboxRoute
-  '/products': typeof AppProductsRoute
-  '/settings': typeof AppSettingsRoute
-  '/orders/new': typeof AppOrdersNewRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/couriers': typeof AuthenticatedAppCouriersRoute
+  '/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/diagnostics': typeof AuthenticatedAppDiagnosticsRoute
+  '/inbox': typeof AuthenticatedAppInboxRoute
+  '/products': typeof AuthenticatedAppProductsRoute
+  '/settings': typeof AuthenticatedAppSettingsRoute
   '/api/public/telemetry': typeof ApiPublicTelemetryRoute
-  '/orders': typeof AppOrdersIndexRoute
+  '/orders/new': typeof AuthenticatedAppOrdersNewRoute
+  '/orders': typeof AuthenticatedAppOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_app': typeof AppRouteWithChildren
-  '/_app/analytics': typeof AppAnalyticsRoute
-  '/_app/couriers': typeof AppCouriersRoute
-  '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/diagnostics': typeof AppDiagnosticsRoute
-  '/_app/inbox': typeof AppInboxRoute
-  '/_app/products': typeof AppProductsRoute
-  '/_app/settings': typeof AppSettingsRoute
-  '/_app/orders/new': typeof AppOrdersNewRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/_app': typeof AuthenticatedAppRouteWithChildren
+  '/_authenticated/_app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/_authenticated/_app/couriers': typeof AuthenticatedAppCouriersRoute
+  '/_authenticated/_app/dashboard': typeof AuthenticatedAppDashboardRoute
+  '/_authenticated/_app/diagnostics': typeof AuthenticatedAppDiagnosticsRoute
+  '/_authenticated/_app/inbox': typeof AuthenticatedAppInboxRoute
+  '/_authenticated/_app/products': typeof AuthenticatedAppProductsRoute
+  '/_authenticated/_app/settings': typeof AuthenticatedAppSettingsRoute
   '/api/public/telemetry': typeof ApiPublicTelemetryRoute
-  '/_app/orders/': typeof AppOrdersIndexRoute
+  '/_authenticated/_app/orders/new': typeof AuthenticatedAppOrdersNewRoute
+  '/_authenticated/_app/orders/': typeof AuthenticatedAppOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/reset-password'
     | '/analytics'
     | '/couriers'
     | '/dashboard'
@@ -134,12 +168,14 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/products'
     | '/settings'
-    | '/orders/new'
     | '/api/public/telemetry'
+    | '/orders/new'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/reset-password'
     | '/analytics'
     | '/couriers'
     | '/dashboard'
@@ -147,28 +183,33 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/products'
     | '/settings'
-    | '/orders/new'
     | '/api/public/telemetry'
+    | '/orders/new'
     | '/orders'
   id:
     | '__root__'
     | '/'
-    | '/_app'
-    | '/_app/analytics'
-    | '/_app/couriers'
-    | '/_app/dashboard'
-    | '/_app/diagnostics'
-    | '/_app/inbox'
-    | '/_app/products'
-    | '/_app/settings'
-    | '/_app/orders/new'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/_authenticated/_app'
+    | '/_authenticated/_app/analytics'
+    | '/_authenticated/_app/couriers'
+    | '/_authenticated/_app/dashboard'
+    | '/_authenticated/_app/diagnostics'
+    | '/_authenticated/_app/inbox'
+    | '/_authenticated/_app/products'
+    | '/_authenticated/_app/settings'
     | '/api/public/telemetry'
-    | '/_app/orders/'
+    | '/_authenticated/_app/orders/new'
+    | '/_authenticated/_app/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRouteWithChildren
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ApiPublicTelemetryRoute: typeof ApiPublicTelemetryRoute
 }
 
@@ -181,75 +222,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
+    '/_authenticated': {
+      id: '/_authenticated'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/analytics': {
-      id: '/_app/analytics'
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/_app': {
+      id: '/_authenticated/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/_app/analytics': {
+      id: '/_authenticated/_app/analytics'
       path: '/analytics'
       fullPath: '/analytics'
-      preLoaderRoute: typeof AppAnalyticsRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/couriers': {
-      id: '/_app/couriers'
+    '/_authenticated/_app/couriers': {
+      id: '/_authenticated/_app/couriers'
       path: '/couriers'
       fullPath: '/couriers'
-      preLoaderRoute: typeof AppCouriersRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppCouriersRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
+    '/_authenticated/_app/dashboard': {
+      id: '/_authenticated/_app/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppDashboardRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/diagnostics': {
-      id: '/_app/diagnostics'
+    '/_authenticated/_app/diagnostics': {
+      id: '/_authenticated/_app/diagnostics'
       path: '/diagnostics'
       fullPath: '/diagnostics'
-      preLoaderRoute: typeof AppDiagnosticsRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppDiagnosticsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/inbox': {
-      id: '/_app/inbox'
+    '/_authenticated/_app/inbox': {
+      id: '/_authenticated/_app/inbox'
       path: '/inbox'
       fullPath: '/inbox'
-      preLoaderRoute: typeof AppInboxRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppInboxRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/products': {
-      id: '/_app/products'
+    '/_authenticated/_app/products': {
+      id: '/_authenticated/_app/products'
       path: '/products'
       fullPath: '/products'
-      preLoaderRoute: typeof AppProductsRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppProductsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_app/settings': {
-      id: '/_app/settings'
+    '/_authenticated/_app/settings': {
+      id: '/_authenticated/_app/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/orders/': {
-      id: '/_app/orders/'
-      path: '/orders'
-      fullPath: '/orders/'
-      preLoaderRoute: typeof AppOrdersIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/orders/new': {
-      id: '/_app/orders/new'
-      path: '/orders/new'
-      fullPath: '/orders/new'
-      preLoaderRoute: typeof AppOrdersNewRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
     '/api/public/telemetry': {
       id: '/api/public/telemetry'
@@ -258,50 +306,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelemetryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/_app/orders/': {
+      id: '/_authenticated/_app/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof AuthenticatedAppOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/_app/orders/new': {
+      id: '/_authenticated/_app/orders/new'
+      path: '/orders/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof AuthenticatedAppOrdersNewRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
   }
 }
 
-interface AppRouteChildren {
-  AppAnalyticsRoute: typeof AppAnalyticsRoute
-  AppCouriersRoute: typeof AppCouriersRoute
-  AppDashboardRoute: typeof AppDashboardRoute
-  AppDiagnosticsRoute: typeof AppDiagnosticsRoute
-  AppInboxRoute: typeof AppInboxRoute
-  AppProductsRoute: typeof AppProductsRoute
-  AppSettingsRoute: typeof AppSettingsRoute
-  AppOrdersNewRoute: typeof AppOrdersNewRoute
-  AppOrdersIndexRoute: typeof AppOrdersIndexRoute
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
+  AuthenticatedAppCouriersRoute: typeof AuthenticatedAppCouriersRoute
+  AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute
+  AuthenticatedAppDiagnosticsRoute: typeof AuthenticatedAppDiagnosticsRoute
+  AuthenticatedAppInboxRoute: typeof AuthenticatedAppInboxRoute
+  AuthenticatedAppProductsRoute: typeof AuthenticatedAppProductsRoute
+  AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
+  AuthenticatedAppOrdersNewRoute: typeof AuthenticatedAppOrdersNewRoute
+  AuthenticatedAppOrdersIndexRoute: typeof AuthenticatedAppOrdersIndexRoute
 }
 
-const AppRouteChildren: AppRouteChildren = {
-  AppAnalyticsRoute: AppAnalyticsRoute,
-  AppCouriersRoute: AppCouriersRoute,
-  AppDashboardRoute: AppDashboardRoute,
-  AppDiagnosticsRoute: AppDiagnosticsRoute,
-  AppInboxRoute: AppInboxRoute,
-  AppProductsRoute: AppProductsRoute,
-  AppSettingsRoute: AppSettingsRoute,
-  AppOrdersNewRoute: AppOrdersNewRoute,
-  AppOrdersIndexRoute: AppOrdersIndexRoute,
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
+  AuthenticatedAppCouriersRoute: AuthenticatedAppCouriersRoute,
+  AuthenticatedAppDashboardRoute: AuthenticatedAppDashboardRoute,
+  AuthenticatedAppDiagnosticsRoute: AuthenticatedAppDiagnosticsRoute,
+  AuthenticatedAppInboxRoute: AuthenticatedAppInboxRoute,
+  AuthenticatedAppProductsRoute: AuthenticatedAppProductsRoute,
+  AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
+  AuthenticatedAppOrdersNewRoute: AuthenticatedAppOrdersNewRoute,
+  AuthenticatedAppOrdersIndexRoute: AuthenticatedAppOrdersIndexRoute,
 }
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AppRoute: AppRouteWithChildren,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ApiPublicTelemetryRoute: ApiPublicTelemetryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

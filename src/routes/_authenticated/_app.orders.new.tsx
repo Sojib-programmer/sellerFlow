@@ -32,7 +32,7 @@ interface NewSearch {
   district: string;
 }
 
-export const Route = createFileRoute("/_app/orders/new")({
+export const Route = createFileRoute("/_authenticated/_app/orders/new")({
   validateSearch: (s: Record<string, unknown>): NewSearch => ({
     customer: typeof s["customer"] === "string" ? s["customer"] : "",
     phone: typeof s["phone"] === "string" ? s["phone"] : "",
@@ -81,7 +81,7 @@ function CreateOrderPage() {
   const phoneOk = /^01[3-9]\d{8}$/.test(phone.replace(/[\s-]/g, ""));
   const valid = Boolean(customer.trim() && phoneOk && address.trim() && product && qty > 0);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
     if (!valid || !product) {
@@ -93,7 +93,8 @@ function CreateOrderPage() {
       return;
     }
     setSaving(true);
-    const id = createOrder({
+    try {
+      const id = await createOrder({
       name: customer.trim(),
       phone: phone.trim(),
       address: address.trim(),
@@ -104,11 +105,15 @@ function CreateOrderPage() {
       courier,
       payment,
     });
-    toast.success(`Order ${id} created`, {
-      description: `${customer.trim()} · ${money(total)} · ${payment}`,
-    });
-    setSaving(false);
-    navigate({ to: "/orders" });
+      toast.success(`Order ${id} created`, {
+        description: `${money(total)} · ${payment}`,
+      });
+      void navigate({ to: "/orders" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not create order");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -118,7 +123,7 @@ function CreateOrderPage() {
         subtitle="Built for orders that arrive in chat — fill it in while you’re still talking."
       />
 
-      <form onSubmit={submit} className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <form onSubmit={(e) => void submit(e)} className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-4">
           <section className="card-surface space-y-4 p-4">
             <h2 className="text-sm font-semibold">Customer</h2>
