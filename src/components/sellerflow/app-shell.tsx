@@ -132,9 +132,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           </Button>
           <div className="rounded-lg bg-muted px-3 py-2">
-            <p className="truncate text-sm font-semibold">{STORE.name}</p>
-            <p className="truncate text-xs text-muted-foreground">{STORE.owner}</p>
+            <p className="truncate text-sm font-semibold">
+              {store?.name ?? (isLoading ? "Loading store…" : "Your store")}
+            </p>
+            <p className="truncate text-xs text-muted-foreground">
+              {store ? `${ROLE_LABEL[store.role] ?? store.role} · ${email}` : email}
+            </p>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-2 w-full justify-start gap-2 text-muted-foreground"
+            onClick={signOut}
+          >
+            <LogOut className="size-4" aria-hidden />
+            Sign out
+          </Button>
+
         </div>
       </aside>
 
