@@ -41,7 +41,11 @@ const NAV = [
 const MOBILE_PRIMARY = NAV.slice(0, 4);
 const MOBILE_MORE = NAV.slice(4);
 
-const STORE = { name: "Dan’s Store", owner: "Dan Luca · Growth plan" };
+const ROLE_LABEL: Record<string, string> = {
+  owner: "Owner",
+  manager: "Manager",
+  staff: "Staff",
+};
 
 const FOCUS_RING =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
