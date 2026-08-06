@@ -60,6 +60,7 @@ export type SellerFlowValue = {
     sku: string;
     price: number;
     stock: number;
+    lowStockThreshold?: number;
   }) => Promise<void>;
   renameStore: (name: string) => Promise<void>;
   loadDemoData: () => Promise<{ orders: number; products: number }>;
@@ -102,7 +103,13 @@ export function useSellerFlow(): SellerFlowValue {
   });
 
   const productMutation = useMutation({
-    mutationFn: (input: { name: string; sku: string; price: number; stock: number }) =>
+    mutationFn: (input: {
+      name: string;
+      sku: string;
+      price: number;
+      stock: number;
+      lowStockThreshold?: number;
+    }) =>
       upsertProductCall({ data: input }),
     onSuccess: invalidate,
   });
