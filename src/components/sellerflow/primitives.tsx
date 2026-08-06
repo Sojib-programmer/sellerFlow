@@ -152,3 +152,60 @@ export function OrderTable({
     </div>
   );
 }
+
+/** Shared loading / empty / error surface so every page states its condition the same way. */
+export function StateBlock({
+  tone = "empty",
+  title,
+  body,
+  action,
+}: {
+  tone?: "loading" | "empty" | "error";
+  title: string;
+  body?: string;
+  action?: ReactNode;
+}) {
+  if (tone === "loading") {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="rounded-xl border border-border bg-card p-5 shadow-card"
+      >
+        <span className="sr-only">{title}</span>
+        <div className="grid gap-3">
+          <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div
+      role={tone === "error" ? "alert" : undefined}
+      className="rounded-xl border border-border bg-card p-8 text-center shadow-card"
+    >
+      <strong
+        className={cn("block text-base", tone === "error" && "text-destructive")}
+      >
+        {title}
+      </strong>
+      {body ? <p className="mt-1.5 text-xs text-muted-foreground">{body}</p> : null}
+      {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
+    </div>
+  );
+}
+
+export function KpiSkeletonRow({ count = 4 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4" aria-hidden>
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className="h-[104px] animate-pulse rounded-xl border border-border bg-card shadow-card"
+        />
+      ))}
+    </div>
+  );
+}

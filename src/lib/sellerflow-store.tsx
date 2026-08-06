@@ -4,14 +4,17 @@ import { useCallback, type ReactNode } from "react";
 import {
   createOrder as createOrderFn,
   getWorkspace,
+  listMembers as listMembersFn,
   loadDemoData as loadDemoDataFn,
   renameStore as renameStoreFn,
   updateOrder as updateOrderFn,
   upsertProduct as upsertProductFn,
   type CustomerInfo,
+  type MemberInfo,
   type StoreInfo,
 } from "./sellerflow.functions";
 import type { Channel, Order, OrderStatus, Product } from "./sellerflow-data";
+
 
 export type NewOrderDraft = {
   name: string;
@@ -57,6 +60,7 @@ export type SellerFlowValue = {
     sku: string;
     price: number;
     stock: number;
+    lowStockThreshold?: number;
   }) => Promise<void>;
   renameStore: (name: string) => Promise<void>;
   loadDemoData: () => Promise<{ orders: number; products: number }>;
@@ -99,7 +103,13 @@ export function useSellerFlow(): SellerFlowValue {
   });
 
   const productMutation = useMutation({
-    mutationFn: (input: { name: string; sku: string; price: number; stock: number }) =>
+    mutationFn: (input: {
+      name: string;
+      sku: string;
+      price: number;
+      stock: number;
+      lowStockThreshold?: number;
+    }) =>
       upsertProductCall({ data: input }),
     onSuccess: invalidate,
   });
@@ -150,4 +160,15 @@ export function useSellerFlow(): SellerFlowValue {
       renameMutation.isPending ||
       demoMutation.isPending,
   };
+}
+
+export const membersQueryKey = ["store-members"] as const;
+
+export function useStoreMembers() {
+  const fetchMembers = useServerFn(listMembersFn);
+  return useQuery<MemberInfo[]>({
+    queryKey: membersQueryKey,
+    queryFn: () => fetchMembers(),
+    staleTime: 60_000,
+  });
 }

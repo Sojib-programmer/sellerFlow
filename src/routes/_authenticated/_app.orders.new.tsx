@@ -26,18 +26,13 @@ import {
 import { useSellerFlow } from "@/lib/sellerflow-store";
 
 interface NewSearch {
-  customer: string;
-  phone: string;
-  channel: string;
-  district: string;
+  channel?: string | undefined;
 }
 
 export const Route = createFileRoute("/_authenticated/_app/orders/new")({
+  // Privacy: only non-identifying prefill travels in the URL — never name, phone or address.
   validateSearch: (s: Record<string, unknown>): NewSearch => ({
-    customer: typeof s["customer"] === "string" ? s["customer"] : "",
-    phone: typeof s["phone"] === "string" ? s["phone"] : "",
-    channel: typeof s["channel"] === "string" ? s["channel"] : "",
-    district: typeof s["district"] === "string" ? s["district"] : "",
+    channel: typeof s["channel"] === "string" ? s["channel"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -62,10 +57,10 @@ function CreateOrderPage() {
   const navigate = useNavigate();
   const { products, createOrder } = useSellerFlow();
 
-  const [customer, setCustomer] = useState(prefill.customer);
-  const [phone, setPhone] = useState(prefill.phone);
+  const [customer, setCustomer] = useState("");
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [district, setDistrict] = useState(prefill.district || DISTRICTS[0]!);
+  const [district, setDistrict] = useState(DISTRICTS[0]!);
   const [channel, setChannel] = useState<Channel>((prefill.channel as Channel) || "Facebook");
   const [sku, setSku] = useState(products[0]?.sku ?? "");
   const [qty, setQty] = useState(1);

@@ -34,7 +34,7 @@ let queue: ErrorEventInput[] = [];
 let flushTimer: ReturnType<typeof setTimeout> | undefined;
 const recentByFingerprint = new Map<string, number>();
 
-const release = import.meta.env["VITE_RELEASE"] ?? import.meta.env.MODE ?? "dev";
+const release = import.meta.env["VITE_RELEASE"] ?? "v1.0.0-beta";
 
 function makeSessionId(): string {
   try {

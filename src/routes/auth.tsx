@@ -18,7 +18,7 @@ function safeRedirect(value: unknown): string {
 }
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { redirect?: string | undefined } => ({
     redirect: safeRedirect(s["redirect"]),
   }),
   head: () => ({
@@ -40,7 +40,8 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { redirect } = Route.useSearch();
+  const search = Route.useSearch();
+  const redirect = safeRedirect(search.redirect);
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("signin");
   const [storeName, setStoreName] = useState("");
