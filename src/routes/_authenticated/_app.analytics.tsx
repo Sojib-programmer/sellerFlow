@@ -1,6 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/sellerflow/page-header";
-import { BarChart, KpiCard, Panel } from "@/components/sellerflow/primitives";
+import {
+  BarChart,
+  KpiCard,
+  KpiSkeletonRow,
+  Panel,
+  StateBlock,
+} from "@/components/sellerflow/primitives";
+import { Button } from "@/components/ui/button";
+import { channelDotClass, money } from "@/lib/sellerflow-data";
+import { computeAnalytics } from "@/lib/sellerflow-metrics";
+import { useSellerFlow } from "@/lib/sellerflow-store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/_app/analytics")({
   head: () => ({
@@ -21,45 +32,100 @@ export const Route = createFileRoute("/_authenticated/_app/analytics")({
   component: Analytics,
 });
 
-const weeks = [44, 59, 66, 51, 78, 70, 92].map((value, i) => ({
-  label: `Week ${i + 1}`,
-  value,
-}));
-
-const insights = [
-  ["📈", "Facebook converts best", "52% of all orders originate here."],
-  ["↩️", "Return rate: 5.2%", "Down 1.4% from last month."],
-  ["📍", "Dhaka drives 46% of sales", "Prioritize same-day options here."],
-];
-
 function Analytics() {
-  return (
-    <>
-      <PageHeader title="Analytics" subtitle="See what is driving profitable growth." />
+  const { orders, customers, isLoading, isError, error, refetch } = useSellerFlow();
+  const a = computeAnalytics(orders, customers);
 
+  if (isLoading) return <AnalyticsShell><KpiSkeletonRow /></AnalyticsShell>;
+
+  if (isError)
+    return (
+      <AnalyticsShell>
+        <StateBlock
+          tone="error"
+          title="Could not load analytics"
+          body={error?.message ?? "Please try again."}
+          action={
+            <Button variant="outline" onClick={refetch}>
+              Retry
+            </Button>
+          }
+        />
+      </AnalyticsShell>
+    );
+
+  if (!a.hasHistory)
+    return (
+      <AnalyticsShell>
+        <StateBlock
+          title="Not enough history yet"
+          body="Analytics fills in as soon as your store has orders. Create one, or load demo data from Settings."
+          action={
+            <Button asChild className="shadow-primary">
+              <Link to="/orders/new">Create order</Link>
+            </Button>
+          }
+        />
+      </AnalyticsShell>
+    );
+
+  return (
+    <AnalyticsShell>
       <div className="grid gap-4 lg:grid-cols-[1.65fr_1fr]">
-        <Panel title="Sales performance" subtitle="Last 30 days · ৳761,240 revenue">
-          <BarChart data={weeks} />
+        <Panel
+          title="Sales performance"
+          subtitle={`${orders.length} orders · ${money(a.revenue)} revenue`}
+        >
+          <BarChart data={a.trend} />
         </Panel>
-        <Panel title="Key insights">
-          <div className="grid gap-4">
-            {insights.map(([icon, title, body]) => (
-              <p key={title}>
-                {icon} <b>{title}</b>
-                <br />
-                <span className="text-xs text-muted-foreground">{body}</span>
-              </p>
+        <Panel title="Top districts" subtitle="Where your buyers are">
+          <div className="grid gap-3.5">
+            {a.districts.map((d) => (
+              <div key={d.district} className="flex items-center gap-2.5 text-sm">
+                {d.district}
+                <b className="ml-auto">{d.share}</b>
+              </div>
             ))}
           </div>
         </Panel>
       </div>
 
+      <Panel className="mt-5" title="Channel mix" subtitle="Share of orders by channel">
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          {a.channelShare.map((c) => (
+            <div key={c.channel} className="flex items-center gap-2.5 text-sm">
+              <i
+                className={cn("size-2.5 rounded-full", channelDotClass(c.channel))}
+                aria-hidden
+              />
+              {c.channel}
+              <b className="ml-auto">
+                {c.share} · {c.orders}
+              </b>
+            </div>
+          ))}
+        </div>
+      </Panel>
+
       <div className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiCard label="Top product" value="Linen Kurti" hint="84 sold this month" />
-        <KpiCard label="Avg. order value" value="৳1,842" hint="↑ 6% vs. last month" />
-        <KpiCard label="Repeat customers" value="31%" hint="Loyal buyer base" />
-        <KpiCard label="COD success rate" value="94.8%" hint="Across all couriers" />
+        <KpiCard
+          label="Average order value"
+          value={money(a.avgOrderValue)}
+          hint="Across all orders"
+        />
+        <KpiCard label="Return rate" value={a.returnRate} hint="Of closed orders" tone="bad" />
+        <KpiCard label="Repeat customers" value={a.repeatRate} hint="Ordered more than once" />
+        <KpiCard label="COD success rate" value={a.codSuccess} hint="Across all couriers" />
       </div>
+    </AnalyticsShell>
+  );
+}
+
+function AnalyticsShell({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <PageHeader title="Analytics" subtitle="See what is driving profitable growth." />
+      {children}
     </>
   );
 }
