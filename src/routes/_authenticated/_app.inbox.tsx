@@ -36,7 +36,7 @@ function Inbox() {
     <>
       <PageHeader
         title="Unified inbox"
-        subtitle="Turn social messages into orders without switching apps."
+        subtitle="Channel sync is coming soon — these are sample conversations you can practice with."
       />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">

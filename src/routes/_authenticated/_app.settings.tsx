@@ -50,7 +50,10 @@ function SettingsPage() {
 
   async function submitRename(e: React.FormEvent) {
     e.preventDefault();
-    if (!storeName.trim()) return toast.error("Store name is required");
+    if (!storeName.trim()) {
+      toast.error("Store name is required");
+      return;
+    }
     setRenaming(true);
     try {
       await renameStore(storeName.trim());
