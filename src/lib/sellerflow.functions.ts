@@ -487,3 +487,39 @@ export const upsertProduct = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export type MemberInfo = {
+  id: string;
+  role: "owner" | "manager" | "staff";
+  isYou: boolean;
+  joinedAt: string;
+};
+
+export const listMembers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<MemberInfo[]> => {
+    const { supabase, userId } = context;
+    const { data: membership, error: memberError } = await supabase
+      .from("store_members")
+      .select("store_id")
+      .eq("user_id", userId)
+      .limit(1)
+      .maybeSingle();
+    if (memberError) throw new Error(memberError.message);
+    if (!membership) return [];
+
+    const { data, error } = await supabase
+      .from("store_members")
+      .select("id, user_id, role, created_at")
+      .eq("store_id", membership.store_id)
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+
+    // Only role + membership metadata leaves the server; no emails or user ids.
+    return (data ?? []).map((m) => ({
+      id: m.id,
+      role: m.role,
+      isYou: m.user_id === userId,
+      joinedAt: m.created_at,
+    }));
+  });
