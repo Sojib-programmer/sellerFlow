@@ -154,3 +154,14 @@ export function useSellerFlow(): SellerFlowValue {
       demoMutation.isPending,
   };
 }
+
+export const membersQueryKey = ["store-members"] as const;
+
+export function useStoreMembers() {
+  const fetchMembers = useServerFn(listMembersFn);
+  return useQuery<MemberInfo[]>({
+    queryKey: membersQueryKey,
+    queryFn: () => fetchMembers(),
+    staleTime: 60_000,
+  });
+}

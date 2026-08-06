@@ -26,7 +26,7 @@ import {
 import { useSellerFlow } from "@/lib/sellerflow-store";
 
 interface NewSearch {
-  channel?: string;
+  channel?: string | undefined;
 }
 
 export const Route = createFileRoute("/_authenticated/_app/orders/new")({
