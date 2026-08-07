@@ -89,7 +89,9 @@
   --secondary-foreground: oklch(0.267 0.055 253);
 
   --muted: oklch(0.965 0.008 240);
-  --muted-foreground: oklch(0.556 0.045 251);
+  /* Darkened from 0.556 so 12-14px muted text clears WCAG AA 4.5:1 on --surface. */
+  --muted-foreground: oklch(0.525 0.045 251);
+
 
   --accent: oklch(0.965 0.026 165);
   --accent-foreground: oklch(0.505 0.107 165);
