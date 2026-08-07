@@ -13,12 +13,17 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { AxeBuilder } from "@axe-core/playwright";
 import { chromium } from "playwright";
 import { startPreviewServer, launchOptions } from "../scripts/server-harness.mjs";
+import { applySession, getTestSession } from "../scripts/test-session.mjs";
 
 const ARTIFACTS = "test-artifacts";
 const SCREENSHOTS = `${ARTIFACTS}/screenshots`;
 
-const ROUTES = [
-  "/",
+// Public routes render for anyone. Gated routes live under the _authenticated
+// layout and redirect to /auth without a session, so they need a real session
+// injected before navigation — otherwise this suite would silently be testing
+// the sign-in page ten times over.
+const PUBLIC_ROUTES = ["/", "/auth"];
+const GATED_ROUTES = [
   "/dashboard",
   "/orders",
   "/orders/new",
@@ -36,6 +41,7 @@ const VIEWPORTS = [
   { name: "laptop", width: 1280, height: 900, sidebar: true },
   { name: "desktop", width: 1680, height: 1050, sidebar: true },
 ];
+
 
 // Narrow, explicit allowlist — never a broad regex that could hide real bugs.
 const ALLOWED_CONSOLE = [
@@ -72,7 +78,9 @@ function attachDiagnostics(page, label) {
 async function checkResponsiveChrome(page, viewport, route) {
   const sidebar = page.locator('aside[data-testid="app-sidebar"]');
   const bottomNav = page.locator('nav[data-testid="app-bottom-nav"]');
-  if (route === "/") return; // landing page renders outside the app shell
+  // Public routes render outside the app shell.
+  if (PUBLIC_ROUTES.includes(route)) return;
+
 
   const sidebarVisible = await sidebar.isVisible();
   const bottomVisible = await bottomNav.isVisible();
@@ -178,6 +186,19 @@ async function checkBottomSheet(page) {
 const server = await startPreviewServer();
 const browser = await chromium.launch(launchOptions());
 
+const { session, reason, email, created } = await getTestSession();
+if (session) {
+  console.log(
+    `Signed-in sweep enabled as ${email}${created ? " (ad-hoc account)" : ""} — gated routes will be exercised.`,
+  );
+} else if (process.env["SMOKE_REQUIRE_AUTH"] === "1") {
+  fail(`no test session available: ${reason}`);
+} else {
+  console.log(`WARNING: no test session (${reason}). Gated routes are SKIPPED, not verified.`);
+}
+
+const ROUTES = session ? [...PUBLIC_ROUTES, ...GATED_ROUTES] : PUBLIC_ROUTES;
+
 try {
   for (const viewport of VIEWPORTS) {
     console.log(`\n=== ${viewport.name} (${viewport.width}x${viewport.height}) ===`);
@@ -185,6 +206,7 @@ try {
       viewport: { width: viewport.width, height: viewport.height },
     });
     context._smokeOrigin = server.url;
+    if (session) await applySession(context, server.url, session);
 
     for (const route of ROUTES) {
       const page = await context.newPage();
@@ -193,6 +215,18 @@ try {
 
       if (!response || response.status() >= 400) {
         fail(`${route} @${viewport.name}: HTTP ${response?.status() ?? "no response"}`);
+      }
+
+      // A gated route that bounced to /auth means the session was not honoured.
+      if (GATED_ROUTES.includes(route)) {
+        await page
+          .locator('aside[data-testid="app-sidebar"], nav[data-testid="app-bottom-nav"]')
+          .first()
+          .waitFor({ state: "attached", timeout: 15000 })
+          .catch(() => {});
+        if (new URL(page.url()).pathname.startsWith("/auth")) {
+          fail(`${route} @${viewport.name}: redirected to /auth with a valid session`);
+        }
       }
 
       await checkResponsiveChrome(page, viewport, route);
@@ -228,5 +262,6 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Smoke suite passed: ${ROUTES.length} routes x ${VIEWPORTS.length} viewports, zero console errors, zero serious axe violations.\n`,
+  `Smoke suite passed: ${ROUTES.length} routes x ${VIEWPORTS.length} viewports${session ? " (signed in)" : " (public routes only)"}, zero console errors, zero serious axe violations.\n`,
 );
+
