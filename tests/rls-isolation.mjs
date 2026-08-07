@@ -43,7 +43,7 @@ function client() {
 
 const stamp = Date.now();
 async function makeUser(tag, storeName) {
-  const email = `rls+${tag}.${stamp}@example.com`;
+  const email = `rls-${tag}-${stamp}@example.com`;
   const password = `Test-${stamp}-${tag}!`;
   const sb = client();
   const { data, error } = await sb.auth.signUp({
