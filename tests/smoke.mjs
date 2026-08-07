@@ -13,12 +13,17 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { AxeBuilder } from "@axe-core/playwright";
 import { chromium } from "playwright";
 import { startPreviewServer, launchOptions } from "../scripts/server-harness.mjs";
+import { applySession, getTestSession } from "../scripts/test-session.mjs";
 
 const ARTIFACTS = "test-artifacts";
 const SCREENSHOTS = `${ARTIFACTS}/screenshots`;
 
-const ROUTES = [
-  "/",
+// Public routes render for anyone. Gated routes live under the _authenticated
+// layout and redirect to /auth without a session, so they need a real session
+// injected before navigation — otherwise this suite would silently be testing
+// the sign-in page ten times over.
+const PUBLIC_ROUTES = ["/", "/auth"];
+const GATED_ROUTES = [
   "/dashboard",
   "/orders",
   "/orders/new",
@@ -36,6 +41,7 @@ const VIEWPORTS = [
   { name: "laptop", width: 1280, height: 900, sidebar: true },
   { name: "desktop", width: 1680, height: 1050, sidebar: true },
 ];
+
 
 // Narrow, explicit allowlist — never a broad regex that could hide real bugs.
 const ALLOWED_CONSOLE = [
