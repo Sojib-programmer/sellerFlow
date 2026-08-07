@@ -186,6 +186,19 @@ async function checkBottomSheet(page) {
 const server = await startPreviewServer();
 const browser = await chromium.launch(launchOptions());
 
+const { session, reason, email, created } = await getTestSession();
+if (session) {
+  console.log(
+    `Signed-in sweep enabled as ${email}${created ? " (ad-hoc account)" : ""} — gated routes will be exercised.`,
+  );
+} else if (process.env["SMOKE_REQUIRE_AUTH"] === "1") {
+  fail(`no test session available: ${reason}`);
+} else {
+  console.log(`WARNING: no test session (${reason}). Gated routes are SKIPPED, not verified.`);
+}
+
+const ROUTES = session ? [...PUBLIC_ROUTES, ...GATED_ROUTES] : PUBLIC_ROUTES;
+
 try {
   for (const viewport of VIEWPORTS) {
     console.log(`\n=== ${viewport.name} (${viewport.width}x${viewport.height}) ===`);
@@ -193,6 +206,7 @@ try {
       viewport: { width: viewport.width, height: viewport.height },
     });
     context._smokeOrigin = server.url;
+    if (session) await applySession(context, server.url, session);
 
     for (const route of ROUTES) {
       const page = await context.newPage();
@@ -201,6 +215,18 @@ try {
 
       if (!response || response.status() >= 400) {
         fail(`${route} @${viewport.name}: HTTP ${response?.status() ?? "no response"}`);
+      }
+
+      // A gated route that bounced to /auth means the session was not honoured.
+      if (GATED_ROUTES.includes(route)) {
+        await page
+          .locator('aside[data-testid="app-sidebar"], nav[data-testid="app-bottom-nav"]')
+          .first()
+          .waitFor({ state: "attached", timeout: 15000 })
+          .catch(() => {});
+        if (new URL(page.url()).pathname.startsWith("/auth")) {
+          fail(`${route} @${viewport.name}: redirected to /auth with a valid session`);
+        }
       }
 
       await checkResponsiveChrome(page, viewport, route);
@@ -236,5 +262,6 @@ if (failures.length > 0) {
   process.exit(1);
 }
 console.log(
-  `Smoke suite passed: ${ROUTES.length} routes x ${VIEWPORTS.length} viewports, zero console errors, zero serious axe violations.\n`,
+  `Smoke suite passed: ${ROUTES.length} routes x ${VIEWPORTS.length} viewports${session ? " (signed in)" : " (public routes only)"}, zero console errors, zero serious axe violations.\n`,
 );
+
