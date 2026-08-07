@@ -78,7 +78,9 @@ function attachDiagnostics(page, label) {
 async function checkResponsiveChrome(page, viewport, route) {
   const sidebar = page.locator('aside[data-testid="app-sidebar"]');
   const bottomNav = page.locator('nav[data-testid="app-bottom-nav"]');
-  if (route === "/") return; // landing page renders outside the app shell
+  // Public routes render outside the app shell.
+  if (PUBLIC_ROUTES.includes(route)) return;
+
 
   const sidebarVisible = await sidebar.isVisible();
   const bottomVisible = await bottomNav.isVisible();
